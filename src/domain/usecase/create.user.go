@@ -1,7 +1,7 @@
 package usecase
 
 type CreateUser interface {
-	createUser(params CreateUserParams) error
+	CreateUser(params CreateUserParams) error
 }
 
 type CreateUserParams struct {
