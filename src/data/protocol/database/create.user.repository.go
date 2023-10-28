@@ -5,10 +5,7 @@ type CreateUserRepository interface {
 }
 
 type CreateUserRepositoryParams struct {
-	Name      string
-	Email     string
-	Password  string
-	Token     string
-	CreatedAt int64
-	UpdatedAt int64
+	Name     string
+	Email    string
+	Password string
 }
