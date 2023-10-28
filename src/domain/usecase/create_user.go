@@ -1,4 +1,4 @@
-package usecase
+package domain
 
 type CreateUser interface {
 	CreateUser(params CreateUserParams) error
