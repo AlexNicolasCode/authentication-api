@@ -6,7 +6,6 @@ import (
 	"github.com/bxcodec/faker/v3"
 
 	database "finances-api/src/data/protocol/database"
-	uc "finances-api/src/data/usecase"
 	domain "finances-api/src/domain/usecase"
 	spy "finances-api/test/domain/usecase"
 )
@@ -38,7 +37,7 @@ func MakeUserRequest() domain.CreateUserParams {
 
 func TestCreateUserRepositoryCallTimes(t *testing.T) {
 	createUserRepoSpy := new(spy.CreateUserRepository)
-	sut := uc.MakeCreateUser(createUserRepoSpy)
+	sut := MakeCreateUser(createUserRepoSpy)
 
 	sut.CreateUser(MakeUserRequest())
 
