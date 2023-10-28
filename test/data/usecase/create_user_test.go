@@ -2,7 +2,6 @@ package craete_user_test
 
 import (
 	"testing"
-	"time"
 
 	"github.com/bxcodec/faker/v3"
 
@@ -21,7 +20,6 @@ func (uc *UseCase) CreateUser(params domain.CreateUserParams) error {
 	repositoryParams.Name = params.Name
 	repositoryParams.Email = params.Email
 	repositoryParams.Password = params.Password
-	repositoryParams.CreatedAt = int(time.Now().Unix())
 	err := uc.create_user_repository.CreateUser(repositoryParams)
 	return err
 }
