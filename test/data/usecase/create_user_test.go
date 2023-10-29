@@ -5,17 +5,17 @@ import (
 
 	"github.com/bxcodec/faker/v3"
 
-	protocol "finances-api/src/data/protocol/database"
-	domain "finances-api/src/domain/usecase"
-	mock "finances-api/test/domain/usecase"
+	database "src/data/protocol/database"
+	domain "src/domain/usecase"
+	mock "test/domain/usecase"
 )
 
 type UseCase struct {
-	create_user_repository protocol.CreateUserRepository
+	create_user_repository database.CreateUserRepository
 }
 
 func (uc *UseCase) CreateUser(params domain.CreateUserParams) error {
-	var repositoryParams protocol.CreateUserRepositoryParams
+	var repositoryParams database.CreateUserRepositoryParams
 	repositoryParams.Name = params.Name
 	repositoryParams.Email = params.Email
 	repositoryParams.Password = params.Password
@@ -23,7 +23,7 @@ func (uc *UseCase) CreateUser(params domain.CreateUserParams) error {
 	return err
 }
 
-func MakeCreateUser(create_user_repository protocol.CreateUserRepository) UseCase {
+func MakeCreateUser(create_user_repository database.CreateUserRepository) UseCase {
 	return UseCase{create_user_repository}
 }
 

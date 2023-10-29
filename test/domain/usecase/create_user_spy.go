@@ -2,8 +2,7 @@ package mock
 
 import (
 	"errors"
-
-	protocol "finances-api/src/data/protocol/database"
+	protocol "src/data/protocol/database"
 )
 
 type CreateUserRepository struct {
