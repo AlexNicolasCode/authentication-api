@@ -27,6 +27,17 @@ func MakeCreateUser(create_user_repository protocol.CreateUserRepository) UseCas
 	return UseCase{create_user_repository}
 }
 
+type SutSetupTypes struct {
+	sut               UseCase
+	createUserRepoSpy *mock.CreateUserRepository
+}
+
+func MakeSutSetup() SutSetupTypes {
+	createUserRepoSpy := new(mock.CreateUserRepository)
+	sut := MakeCreateUser(createUserRepoSpy)
+	return SutSetupTypes{sut, createUserRepoSpy}
+}
+
 func MakeUserRequest() domain.CreateUserParams {
 	return domain.CreateUserParams{
 		Name:     faker.Name(),
@@ -36,26 +47,24 @@ func MakeUserRequest() domain.CreateUserParams {
 }
 
 func TestCreateUserRepositoryCallTimes(t *testing.T) {
-	createUserRepoSpy := new(mock.CreateUserRepository)
-	sut := MakeCreateUser(createUserRepoSpy)
+	setup := MakeSutSetup()
 
-	sut.CreateUser(MakeUserRequest())
+	setup.sut.CreateUser(MakeUserRequest())
 
-	if createUserRepoSpy.Count != 1 {
+	if setup.createUserRepoSpy.Count != 1 {
 		t.Error("CreateUser method from CreateUserRepository was called more than one time or not called")
 	}
 }
 
 func TestCreateUserShouldCallCreateUserRepositoryWithCorrectParams(t *testing.T) {
-	createUserRepoSpy := new(mock.CreateUserRepository)
+	setup := MakeSutSetup()
 	fakeParams := MakeUserRequest()
-	sut := MakeCreateUser(createUserRepoSpy)
 
-	sut.CreateUser(fakeParams)
+	setup.sut.CreateUser(fakeParams)
 
-	if createUserRepoSpy.Params.Email != fakeParams.Email ||
-		createUserRepoSpy.Params.Name != fakeParams.Name ||
-		createUserRepoSpy.Params.Password != fakeParams.Password {
+	if setup.createUserRepoSpy.Params.Email != fakeParams.Email ||
+		setup.createUserRepoSpy.Params.Name != fakeParams.Name ||
+		setup.createUserRepoSpy.Params.Password != fakeParams.Password {
 		t.Error("CreateUser method from CreateUserRepository was called more than one time or not called")
 	}
 }
