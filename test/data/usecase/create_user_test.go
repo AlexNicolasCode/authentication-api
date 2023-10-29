@@ -46,7 +46,7 @@ func MakeUserRequest() domain.CreateUserParams {
 	}
 }
 
-func TestCreateUserRepositoryCallTimes(t *testing.T) {
+func TestShouldCallCreateUserRepositoryOneTime(t *testing.T) {
 	setup := MakeSutSetup()
 
 	setup.sut.CreateUser(MakeUserRequest())
@@ -56,7 +56,7 @@ func TestCreateUserRepositoryCallTimes(t *testing.T) {
 	}
 }
 
-func TestCreateUserShouldCallCreateUserRepositoryWithCorrectParams(t *testing.T) {
+func TestShouldCallCreateUserRepositoryWithCorrectParams(t *testing.T) {
 	setup := MakeSutSetup()
 	fakeParams := MakeUserRequest()
 
