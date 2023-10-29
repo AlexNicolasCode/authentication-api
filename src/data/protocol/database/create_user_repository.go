@@ -1,4 +1,4 @@
-package database
+package protocol
 
 type CreateUserRepository interface {
 	CreateUser(params CreateUserRepositoryParams) error

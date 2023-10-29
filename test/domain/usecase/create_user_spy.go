@@ -1,14 +1,14 @@
-package spy
+package mock
 
 import (
-	"finances-api/src/data/protocol/database"
+	protocol "finances-api/src/data/protocol/database"
 )
 
 type CreateUserRepository struct {
 	Count int
 }
 
-func (m *CreateUserRepository) CreateUser(params database.CreateUserRepositoryParams) error {
+func (m *CreateUserRepository) CreateUser(params protocol.CreateUserRepositoryParams) error {
 	m.Count += 1
 	return nil
 }

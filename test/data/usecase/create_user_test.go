@@ -1,21 +1,21 @@
-package craete_user_test
+package data_test
 
 import (
 	"testing"
 
 	"github.com/bxcodec/faker/v3"
 
-	database "finances-api/src/data/protocol/database"
+	protocol "finances-api/src/data/protocol/database"
 	domain "finances-api/src/domain/usecase"
-	spy "finances-api/test/domain/usecase"
+	mock "finances-api/test/domain/usecase"
 )
 
 type UseCase struct {
-	create_user_repository database.CreateUserRepository
+	create_user_repository protocol.CreateUserRepository
 }
 
 func (uc *UseCase) CreateUser(params domain.CreateUserParams) error {
-	var repositoryParams database.CreateUserRepositoryParams
+	var repositoryParams protocol.CreateUserRepositoryParams
 	repositoryParams.Name = params.Name
 	repositoryParams.Email = params.Email
 	repositoryParams.Password = params.Password
@@ -23,7 +23,7 @@ func (uc *UseCase) CreateUser(params domain.CreateUserParams) error {
 	return err
 }
 
-func MakeCreateUser(create_user_repository database.CreateUserRepository) UseCase {
+func MakeCreateUser(create_user_repository protocol.CreateUserRepository) UseCase {
 	return UseCase{create_user_repository}
 }
 
@@ -36,7 +36,7 @@ func MakeUserRequest() domain.CreateUserParams {
 }
 
 func TestCreateUserRepositoryCallTimes(t *testing.T) {
-	createUserRepoSpy := new(spy.CreateUserRepository)
+	createUserRepoSpy := new(mock.CreateUserRepository)
 	sut := MakeCreateUser(createUserRepoSpy)
 
 	sut.CreateUser(MakeUserRequest())
