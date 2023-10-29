@@ -68,3 +68,14 @@ func TestShouldCallCreateUserRepositoryWithCorrectParams(t *testing.T) {
 		t.Error("CreateUser method from CreateUserRepository was called more than one time or not called")
 	}
 }
+
+func TestShouldThrowWhenCreateUserRepositoryThrows(t *testing.T) {
+	setup := MakeSutSetup()
+	setup.createUserRepoSpy.ErrorMessage = "Mocked Error"
+
+	err := setup.sut.CreateUser(MakeUserRequest())
+
+	if err.Error() != setup.createUserRepoSpy.ErrorMessage {
+		t.Error("CreateUser return incorrect error when CreateUserRepoSpy throws")
+	}
+}
