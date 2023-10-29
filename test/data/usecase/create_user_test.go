@@ -45,3 +45,17 @@ func TestCreateUserRepositoryCallTimes(t *testing.T) {
 		t.Error("CreateUser method from CreateUserRepository was called more than one time or not called")
 	}
 }
+
+func TestCreateUserShouldCallCreateUserRepositoryWithCorrectParams(t *testing.T) {
+	createUserRepoSpy := new(mock.CreateUserRepository)
+	fakeParams := MakeUserRequest()
+	sut := MakeCreateUser(createUserRepoSpy)
+
+	sut.CreateUser(fakeParams)
+
+	if createUserRepoSpy.Params.Email != fakeParams.Email ||
+		createUserRepoSpy.Params.Name != fakeParams.Name ||
+		createUserRepoSpy.Params.Password != fakeParams.Password {
+		t.Error("CreateUser method from CreateUserRepository was called more than one time or not called")
+	}
+}
