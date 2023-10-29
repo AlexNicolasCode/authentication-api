@@ -79,3 +79,13 @@ func TestShouldThrowWhenCreateUserRepositoryThrows(t *testing.T) {
 		t.Error("CreateUser return incorrect error when CreateUserRepoSpy throws")
 	}
 }
+
+func TestShouldReturnNoneErrorOnSuccess(t *testing.T) {
+	setup := MakeSutSetup()
+
+	err := setup.sut.CreateUser(MakeUserRequest())
+
+	if err != nil {
+		t.Error("CreateUser return some error")
+	}
+}
