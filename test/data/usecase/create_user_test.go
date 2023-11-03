@@ -12,14 +12,19 @@ import (
 )
 
 type UseCase struct {
-	create_user_repository database.CreateUserRepository
-	hasher                 cryptography.Hasher
+	check_user_by_email_repository database.CheckUserByEmailRepository
+	create_user_repository         database.CreateUserRepository
+	hasher                         cryptography.Hasher
 }
 
-func (uc *UseCase) CreateUser(params domain.CreateUserParams) error {
+func (uc *UseCase) CreateUser(params domain.CreateUserParams) (bool, error) {
+	_, err := uc.check_user_by_email_repository.CheckByEmail(params.Email)
+	if err != nil {
+		return false, err
+	}
 	hashedPassword, err := uc.hasher.Hash(params.Password)
 	if err != nil {
-		return err
+		return false, err
 	}
 	repoParams := database.CreateUserRepositoryParams{
 		Name:     params.Name,
@@ -27,24 +32,30 @@ func (uc *UseCase) CreateUser(params domain.CreateUserParams) error {
 		Password: hashedPassword,
 	}
 	err = uc.create_user_repository.CreateUser(repoParams)
-	return err
+	return false, err
 }
 
-func MakeCreateUser(create_user_repository database.CreateUserRepository, hasher cryptography.Hasher) UseCase {
-	return UseCase{create_user_repository, hasher}
+func MakeCreateUser(
+	check_user_by_email_repository database.CheckUserByEmailRepository,
+	create_user_repository database.CreateUserRepository,
+	hasher cryptography.Hasher,
+) UseCase {
+	return UseCase{check_user_by_email_repository, create_user_repository, hasher}
 }
 
 type SutSetupTypes struct {
-	sut               UseCase
-	createUserRepoSpy *mock.CreateUserRepository
-	hasher            *mock.Hasher
+	sut                     UseCase
+	checkUserByEmailRepoSpy *mock.CheckUserByEmailRepository
+	createUserRepoSpy       *mock.CreateUserRepository
+	hasher                  *mock.Hasher
 }
 
 func MakeSutSetup() SutSetupTypes {
+	checkUserByEmailRepoSpy := new(mock.CheckUserByEmailRepository)
 	createUserRepoSpy := new(mock.CreateUserRepository)
 	hasherSpy := new(mock.Hasher)
-	sut := MakeCreateUser(createUserRepoSpy, hasherSpy)
-	return SutSetupTypes{sut, createUserRepoSpy, hasherSpy}
+	sut := MakeCreateUser(checkUserByEmailRepoSpy, createUserRepoSpy, hasherSpy)
+	return SutSetupTypes{sut, checkUserByEmailRepoSpy, createUserRepoSpy, hasherSpy}
 }
 
 func MakeUserRequest() domain.CreateUserParams {
@@ -82,7 +93,7 @@ func TestShouldThrowWhenCreateUserRepositoryThrows(t *testing.T) {
 	setup := MakeSutSetup()
 	setup.createUserRepoSpy.ErrorMessage = "Mocked Error"
 
-	err := setup.sut.CreateUser(MakeUserRequest())
+	_, err := setup.sut.CreateUser(MakeUserRequest())
 
 	if err.Error() != setup.createUserRepoSpy.ErrorMessage {
 		t.Error("CreateUser return incorrect error when CreateUserRepoSpy throws")
@@ -92,7 +103,7 @@ func TestShouldThrowWhenCreateUserRepositoryThrows(t *testing.T) {
 func TestShouldReturnNoneErrorOnSuccess(t *testing.T) {
 	setup := MakeSutSetup()
 
-	err := setup.sut.CreateUser(MakeUserRequest())
+	_, err := setup.sut.CreateUser(MakeUserRequest())
 
 	if err != nil {
 		t.Error("CreateUser return some error")
@@ -107,5 +118,16 @@ func TestShouldCallHasherWithCorrectParam(t *testing.T) {
 
 	if setup.hasher.Plaintext != fakeParams.Password {
 		t.Error("CreateUser return some error")
+	}
+}
+
+func TestShouldThrowIfCheckUserByEmailThrows(t *testing.T) {
+	setup := MakeSutSetup()
+	setup.checkUserByEmailRepoSpy.ErrorMessage = "Mocked Error"
+
+	_, err := setup.sut.CreateUser(MakeUserRequest())
+
+	if err.Error() != setup.checkUserByEmailRepoSpy.ErrorMessage {
+		t.Error("CreateUser return incorrect error when CheckUserByEmail throws")
 	}
 }
