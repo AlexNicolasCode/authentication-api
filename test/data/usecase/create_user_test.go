@@ -5,49 +5,13 @@ import (
 
 	"github.com/bxcodec/faker/v3"
 
-	cryptography "src/data/protocol/cryptography"
-	database "src/data/protocol/database"
+	usecase "src/data/usecase"
 	domain "src/domain/usecase"
 	mock "test/infra"
 )
 
-type UseCase struct {
-	check_user_by_email_repository database.CheckUserByEmailRepository
-	create_user_repository         database.CreateUserRepository
-	hasher                         cryptography.Hasher
-}
-
-func (uc *UseCase) CreateUser(params domain.CreateUserParams) (bool, error) {
-	exists, err := uc.check_user_by_email_repository.CheckByEmail(params.Email)
-	if err != nil {
-		return false, err
-	}
-	if exists {
-		return false, nil
-	}
-	hashedPassword, err := uc.hasher.Hash(params.Password)
-	if err != nil {
-		return false, err
-	}
-	repoParams := database.CreateUserRepositoryParams{
-		Name:     params.Name,
-		Email:    params.Email,
-		Password: hashedPassword,
-	}
-	err = uc.create_user_repository.CreateUser(repoParams)
-	return false, err
-}
-
-func MakeCreateUser(
-	check_user_by_email_repository database.CheckUserByEmailRepository,
-	create_user_repository database.CreateUserRepository,
-	hasher cryptography.Hasher,
-) UseCase {
-	return UseCase{check_user_by_email_repository, create_user_repository, hasher}
-}
-
 type SutSetupTypes struct {
-	sut                     UseCase
+	sut                     usecase.DbCreateUser
 	checkUserByEmailRepoSpy *mock.CheckUserByEmailRepository
 	createUserRepoSpy       *mock.CreateUserRepository
 	hasher                  *mock.Hasher
@@ -57,7 +21,7 @@ func MakeSutSetup() SutSetupTypes {
 	checkUserByEmailRepoSpy := new(mock.CheckUserByEmailRepository)
 	createUserRepoSpy := new(mock.CreateUserRepository)
 	hasherSpy := new(mock.Hasher)
-	sut := MakeCreateUser(checkUserByEmailRepoSpy, createUserRepoSpy, hasherSpy)
+	sut := usecase.MakeDbCreateUser(checkUserByEmailRepoSpy, createUserRepoSpy, hasherSpy)
 	return SutSetupTypes{sut, checkUserByEmailRepoSpy, createUserRepoSpy, hasherSpy}
 }
 
