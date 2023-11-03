@@ -18,9 +18,12 @@ type UseCase struct {
 }
 
 func (uc *UseCase) CreateUser(params domain.CreateUserParams) (bool, error) {
-	_, err := uc.check_user_by_email_repository.CheckByEmail(params.Email)
+	exists, err := uc.check_user_by_email_repository.CheckByEmail(params.Email)
 	if err != nil {
 		return false, err
+	}
+	if exists {
+		return false, nil
 	}
 	hashedPassword, err := uc.hasher.Hash(params.Password)
 	if err != nil {
@@ -139,6 +142,17 @@ func TestShouldThrowIfCheckUserByEmailThrows(t *testing.T) {
 	_, err := setup.sut.CreateUser(MakeUserRequest())
 
 	if err.Error() != setup.checkUserByEmailRepoSpy.ErrorMessage {
+		t.Error("CreateUser return incorrect error when CheckUserByEmail throws")
+	}
+}
+
+func TestShouldReturnFalseIfEmailAlreadyUsed(t *testing.T) {
+	setup := MakeSutSetup()
+	setup.checkUserByEmailRepoSpy.Result = true
+
+	exists, _ := setup.sut.CreateUser(MakeUserRequest())
+
+	if exists {
 		t.Error("CreateUser return incorrect error when CheckUserByEmail throws")
 	}
 }
