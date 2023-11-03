@@ -1,7 +1,7 @@
 package domain
 
 type CreateUser interface {
-	CreateUser(params CreateUserParams) error
+	CreateUser(params CreateUserParams) (bool, error)
 }
 
 type CreateUserParams struct {
