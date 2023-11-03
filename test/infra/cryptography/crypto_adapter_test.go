@@ -37,3 +37,15 @@ func TestShouldThrowIfBcryptThrows(t *testing.T) {
 		t.Error("CreateUser method from CreateUserRepository was called more than one time or not called")
 	}
 }
+
+func TestShouldCallGenerateFromPasswordMethodOnce(t *testing.T) {
+	randomInt := rand.Int()
+	bcryptSpy := new(mock.BcryptSpy)
+	sut := NewCryptoAdapter(bcryptSpy.GenerateFromPassword, randomInt)
+
+	sut.Hash(faker.Password())
+
+	if bcryptSpy.Count != 1 {
+		t.Error("CreateUser method from CreateUserRepository was called more than one time or not called")
+	}
+}
