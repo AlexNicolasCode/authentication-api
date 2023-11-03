@@ -2,34 +2,19 @@ package cryptography
 
 import (
 	"math/rand"
-	"test/infra/mock"
 	"testing"
 
 	"github.com/bxcodec/faker/v3"
+
+	"src/infra/cryptography"
+	"test/infra/mock"
 )
-
-type CryptoAdapter struct {
-	salt                 int
-	GenerateFromPassword func(password []byte, cost int) ([]byte, error)
-}
-
-func (c *CryptoAdapter) Hash(plaintext string) (string, error) {
-	bytes, err := c.GenerateFromPassword([]byte(plaintext), c.salt)
-	return string(bytes), err
-}
-
-func NewCryptoAdapter(
-	GenerateFromPassword func(password []byte, cost int) ([]byte, error),
-	salt int,
-) CryptoAdapter {
-	return CryptoAdapter{salt, GenerateFromPassword}
-}
 
 func TestShouldThrowIfBcryptThrows(t *testing.T) {
 	randomInt := rand.Int()
 	bcryptSpy := new(mock.BcryptSpy)
 	bcryptSpy.ErrorMessage = "Mocked Error"
-	sut := NewCryptoAdapter(bcryptSpy.GenerateFromPassword, randomInt)
+	sut := cryptography.NewCryptoAdapter(bcryptSpy.GenerateFromPassword, randomInt)
 
 	_, err := sut.Hash(faker.Password())
 
@@ -41,7 +26,7 @@ func TestShouldThrowIfBcryptThrows(t *testing.T) {
 func TestShouldCallGenerateFromPasswordMethodOnce(t *testing.T) {
 	randomInt := rand.Int()
 	bcryptSpy := new(mock.BcryptSpy)
-	sut := NewCryptoAdapter(bcryptSpy.GenerateFromPassword, randomInt)
+	sut := cryptography.NewCryptoAdapter(bcryptSpy.GenerateFromPassword, randomInt)
 
 	sut.Hash(faker.Password())
 
@@ -53,7 +38,7 @@ func TestShouldCallGenerateFromPasswordMethodOnce(t *testing.T) {
 func TestShouldReturnHashOnSuccess(t *testing.T) {
 	randomInt := rand.Int()
 	bcryptSpy := new(mock.BcryptSpy)
-	sut := NewCryptoAdapter(bcryptSpy.GenerateFromPassword, randomInt)
+	sut := cryptography.NewCryptoAdapter(bcryptSpy.GenerateFromPassword, randomInt)
 	fakePassword := faker.Password()
 
 	hash, _ := sut.Hash(fakePassword)
