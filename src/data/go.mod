@@ -1,3 +1,3 @@
-module src/data
+module data
 
 go 1.18

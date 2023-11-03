@@ -5,9 +5,10 @@ import (
 
 	"github.com/bxcodec/faker/v3"
 
-	usecase "src/data/usecase"
-	domain "src/domain/usecase"
-	mock "test/infra/mock"
+	"data/usecase"
+	domain "domain/usecase"
+
+	"test/infra/mock"
 )
 
 type SutSetupTypes struct {

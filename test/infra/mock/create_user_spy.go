@@ -2,7 +2,8 @@ package mock
 
 import (
 	"errors"
-	protocol "src/data/protocol/database"
+
+	protocol "data/protocol/database"
 )
 
 type CreateUserRepository struct {

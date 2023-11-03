@@ -1,3 +1,3 @@
-module src/domain
+module domain
 
 go 1.18

@@ -6,7 +6,7 @@ import (
 
 	"github.com/bxcodec/faker/v3"
 
-	"src/infra/cryptography"
+	"infra/cryptography"
 	"test/infra/mock"
 )
 

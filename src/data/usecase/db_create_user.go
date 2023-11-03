@@ -1,9 +1,9 @@
 package usecase
 
 import (
-	cryptography "src/data/protocol/cryptography"
-	database "src/data/protocol/database"
-	domain "src/domain/usecase"
+	cryptography "data/protocol/cryptography"
+	database "data/protocol/database"
+	domain "domain/usecase"
 )
 
 type DbCreateUser struct {
