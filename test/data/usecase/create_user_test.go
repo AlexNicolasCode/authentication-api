@@ -7,7 +7,7 @@ import (
 
 	usecase "src/data/usecase"
 	domain "src/domain/usecase"
-	mock "test/infra"
+	mock "test/infra/mock"
 )
 
 type SutSetupTypes struct {
