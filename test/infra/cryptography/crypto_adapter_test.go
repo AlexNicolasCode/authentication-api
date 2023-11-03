@@ -50,15 +50,15 @@ func TestShouldCallGenerateFromPasswordMethodOnce(t *testing.T) {
 	}
 }
 
-func TestShouldCallGenerateFromPasswordMethodWithCorrectParam(t *testing.T) {
+func TestShouldReturnHashOnSuccess(t *testing.T) {
 	randomInt := rand.Int()
 	bcryptSpy := new(mock.BcryptSpy)
 	sut := NewCryptoAdapter(bcryptSpy.GenerateFromPassword, randomInt)
 	fakePassword := faker.Password()
 
-	sut.Hash(fakePassword)
+	hash, _ := sut.Hash(fakePassword)
 
-	if fakePassword != string(bcryptSpy.Password) {
+	if hash != string(bcryptSpy.Result) {
 		t.Error("CreateUser method from CreateUserRepository was called more than one time or not called")
 	}
 }
