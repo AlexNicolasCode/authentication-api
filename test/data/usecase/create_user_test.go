@@ -8,8 +8,7 @@ import (
 	cryptography "src/data/protocol/cryptography"
 	database "src/data/protocol/database"
 	domain "src/domain/usecase"
-	mock_data "test/domain/usecase"
-	mock_infra "test/infra"
+	mock "test/infra"
 )
 
 type UseCase struct {
@@ -37,13 +36,13 @@ func MakeCreateUser(create_user_repository database.CreateUserRepository, hasher
 
 type SutSetupTypes struct {
 	sut               UseCase
-	createUserRepoSpy *mock_data.CreateUserRepository
-	hasher            *mock_infra.Hasher
+	createUserRepoSpy *mock.CreateUserRepository
+	hasher            *mock.Hasher
 }
 
 func MakeSutSetup() SutSetupTypes {
-	createUserRepoSpy := new(mock_data.CreateUserRepository)
-	hasherSpy := new(mock_infra.Hasher)
+	createUserRepoSpy := new(mock.CreateUserRepository)
+	hasherSpy := new(mock.Hasher)
 	sut := MakeCreateUser(createUserRepoSpy, hasherSpy)
 	return SutSetupTypes{sut, createUserRepoSpy, hasherSpy}
 }
