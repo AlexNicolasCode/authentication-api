@@ -121,6 +121,17 @@ func TestShouldCallHasherWithCorrectParam(t *testing.T) {
 	}
 }
 
+func TestShouldCallCheckUserByEmailWithCorrectParam(t *testing.T) {
+	setup := MakeSutSetup()
+	fakeParams := MakeUserRequest()
+
+	setup.sut.CreateUser(fakeParams)
+
+	if fakeParams.Email != setup.checkUserByEmailRepoSpy.Email {
+		t.Error("CreateUser return incorrect error when CheckUserByEmail throws")
+	}
+}
+
 func TestShouldThrowIfCheckUserByEmailThrows(t *testing.T) {
 	setup := MakeSutSetup()
 	setup.checkUserByEmailRepoSpy.ErrorMessage = "Mocked Error"
