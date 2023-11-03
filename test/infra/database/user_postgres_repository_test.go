@@ -49,3 +49,18 @@ func TestShouldReturnTrueIfEmailIsAlreadyUsed(t *testing.T) {
 		t.Error("CheckByEmail should return true, but return false")
 	}
 }
+
+func TestShouldReturnFalseIfEmailNotUsed(t *testing.T) {
+	db, err := MakeDatabase()
+	if err != nil {
+		t.Error(err)
+	}
+	user := mock.MakeUser()
+	sut := &UserPostgresRepository{database: db}
+
+	exists, _ := sut.CheckByEmail(user.Email)
+
+	if exists {
+		t.Error("CheckByEmail should return true, but return false")
+	}
+}
